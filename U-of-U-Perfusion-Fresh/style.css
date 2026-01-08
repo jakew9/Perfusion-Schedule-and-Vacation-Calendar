@@ -1,0 +1,1035 @@
+/* ===== ROOT VARIABLES ===== */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #51cf66;
+    --danger-color: #ff6b6b;
+    --warning-color: #ffd43b;
+    --gray-color: #adb5bd;
+    --text-dark: #2d3748;
+    --text-light: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ===== ANIMATED BACKGROUND ===== */
+.floating-u {
+    position: fixed;
+    font-size: 200px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+    z-index: 0;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30px) rotate(5deg);
+    }
+}
+
+/* ===== CONTAINER & LAYOUT ===== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== GLASSMORPHISM CARD ===== */
+.card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+/* ===== LOGIN CARD ===== */
+.login-card {
+    max-width: 500px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+.login-card h1 {
+    color: var(--text-light);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.login-card h2 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5em;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.login-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--text-light);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--text-light);
+    backdrop-filter: blur(10px);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: var(--text-light);
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: var(--text-dark);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: var(--text-light);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.9em;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+/* ===== PAGE MANAGEMENT ===== */
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.page-header h2 {
+    color: var(--text-light);
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.page-header div {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ===== SUPERVISOR MENU ===== */
+.supervisor-menu {
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    font-size: 0.85em;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+}
+
+.nav-btn.active {
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-btn span:first-child {
+    font-size: 1.5em;
+}
+
+/* ===== MODALS ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+.modal-wide {
+    max-width: 800px;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+}
+
+.modal h3 {
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* ===== FORMS ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* ===== MESSAGES ===== */
+.error-message {
+    color: var(--danger-color);
+    background: rgba(255, 107, 107, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+    font-weight: 500;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.success-message {
+    color: var(--success-color);
+    background: rgba(81, 207, 102, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+    font-weight: 500;
+}
+
+.success-message.show {
+    display: block;
+}
+
+/* ===== VERSION TABS ===== */
+.version-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.version-tab {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.version-tab:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.version-tab.active {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--text-light);
+    color: var(--text-dark);
+}
+
+.version-tab-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.version-tab-actions button {
+    padding: 4px 8px;
+    font-size: 0.8em;
+}
+
+/* ===== USER MANAGEMENT ===== */
+.user-section {
+    margin-bottom: 30px;
+}
+
+.user-section h4 {
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-item {
+    background: rgba(102, 126, 234, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-info strong {
+    display: block;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.user-info span {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.user-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.user-actions button {
+    padding: 6px 12px;
+    font-size: 0.85em;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.role-badge.admin {
+    background: var(--danger-color);
+    color: var(--text-light);
+}
+
+.role-badge.supervisor {
+    background: var(--warning-color);
+    color: var(--text-dark);
+}
+
+.role-badge.user {
+    background: var(--gray-color);
+    color: var(--text-light);
+}
+
+/* ===== PLACEHOLDER CONTENT ===== */
+.placeholder-content {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+    font-size: 1.2em;
+}
+
+/* ===== CALENDAR CUSTOMIZATION ===== */
+#calendar,
+#supervisorViewCalendar,
+#supervisorEditCalendar,
+#versionCalendar {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 80px; /* Space for bottom nav */
+}
+
+.fc {
+    color: var(--text-dark);
+}
+
+.fc-event {
+    cursor: pointer;
+    border: none !important;
+    padding: 5px;
+    color: var(--text-dark) !important;
+}
+
+.fc-event-title {
+    font-weight: 600;
+    color: var(--text-dark) !important;
+}
+
+.fc-daygrid-event {
+    white-space: normal !important;
+    align-items: flex-start !important;
+}
+
+.fc-toolbar-title {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.fc-button {
+    background: var(--primary-color) !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.fc-button:hover {
+    background: var(--secondary-color) !important;
+    transform: translateY(-2px);
+}
+
+.fc-button:disabled {
+    opacity: 0.5;
+}
+
+/* Event color overrides */
+.event-understaffed {
+    background-color: var(--danger-color) !important;
+}
+
+.event-staffed {
+    background-color: var(--success-color) !important;
+}
+
+.event-no-data {
+    background-color: var(--gray-color) !important;
+}
+
+.event-double-shift {
+    border: 3px solid var(--success-color) !important;
+    box-shadow: 0 0 10px rgba(81, 207, 102, 0.5);
+}
+
+.event-duplicate {
+    border: 3px solid var(--danger-color) !important;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.event-changed {
+    border: 3px solid #ffd700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .login-card {
+        margin: 50px auto;
+    }
+
+    .login-card h1 {
+        font-size: 2em;
+    }
+
+    .login-card h2 {
+        font-size: 1.2em;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-header h2 {
+        font-size: 1.5em;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+    }
+
+    .btn-large {
+        padding: 15px;
+        font-size: 1em;
+    }
+
+    .bottom-nav {
+        padding: 8px;
+    }
+
+    .nav-btn {
+        padding: 8px 10px;
+        font-size: 0.75em;
+    }
+
+    .nav-btn span:first-child {
+        font-size: 1.3em;
+    }
+
+    #calendar,
+    #supervisorViewCalendar,
+    #supervisorEditCalendar,
+    #versionCalendar {
+        padding: 10px;
+    }
+
+    .floating-u {
+        font-size: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    .user-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-actions {
+        width: 100%;
+    }
+
+    .user-actions button {
+        flex: 1;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===== MONTH SELECTOR DROPDOWNS ===== */
+select,
+#editMonthSelector,
+#publishedMonthSelector,
+#historyMonthFilter,
+#importMonth,
+#publishMonth {
+    color: #2d3748 !important; /* Dark text */
+    background-color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+select option {
+    color: #2d3748 !important; /* Dark text for options */
+    background-color: white !important;
+}
+
+/* ===== HISTORY PAGE TEXT ===== */
+#scheduleHistoryPage label,
+#scheduleHistoryPage h2,
+#scheduleHistoryPage h3,
+#scheduleHistoryPage p {
+    color: white !important;
+}
+
+#historyVersionsList .history-version-item div {
+    color: white !important;
+}
+
+/* Account Page Tabs */
+.account-tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px 8px 0 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.account-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.account-tab-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: 600;
+}
+
+.account-tab-content {
+    padding: 20px 0;
+}
+
+/* Request List Item */
+.request-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid;
+}
+
+.request-item.pending {
+    border-left-color: #FFA500;
+}
+
+.request-item.approved {
+    border-left-color: #4CAF50;
+}
+
+.request-item.denied {
+    border-left-color: #F44336;
+}
+
+.request-item h4 {
+    color: white;
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+}
+
+.request-item p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.request-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.request-status.pending {
+    background: rgba(255, 165, 0, 0.2);
+    color: #FFA500;
+}
+
+.request-status.approved {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.request-status.denied {
+    background: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+}
+
+/* Unread Message Badge */
+.unread-badge {
+    background: #F44336;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: 6px;
+    display: inline-block;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Danger Button */
+.btn-danger {
+    background: linear-gradient(135deg, #F44336, #d32f2f);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    transform: translateY(-2px);
+}
+
+/* Shift Requests Modal Styling */
+#shiftRequestsModal .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#shiftRequestsModal h3,
+#shiftRequestsModal h4,
+#shiftRequestsModal p,
+#shiftRequestsModal label {
+    color: #2d3748 !important;
+}
+
+#shiftRequestsModal .account-tab-btn {
+    color: #2d3748 !important;
+}
+
+#shiftRequestsModal .account-tab-btn.active {
+    color: #2d3748 !important;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+#supervisorRequestsList .request-item h4 {
+    color: #2d3748 !important;
+}
+
+#supervisorRequestsList .request-item p {
+    color: #4a5568 !important;
+}
+
+#supervisorRequestsList .request-item strong {
+    color: #2d3748 !important;
+}
+
+/* Request Response Modal */
+#requestResponseModal .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#requestResponseModal h3,
+#requestResponseModal label {
+    color: #2d3748 !important;
+}
+
+/* Vacation Requests Modal Styling */
+#vacationRequestsModal .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#vacationRequestsModal h3,
+#vacationRequestsModal h4,
+#vacationRequestsModal p,
+#vacationRequestsModal label {
+    color: #2d3748 !important;
+}
+
+#vacationRequestsModal .account-tab-btn {
+    color: #2d3748 !important;
+}
+
+#vacationRequestsModal .account-tab-btn.active {
+    color: #2d3748 !important;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+#supervisorVacationList .request-item h4 {
+    color: #2d3748 !important;
+}
+
+#supervisorVacationList .request-item p {
+    color: #4a5568 !important;
+}
+
+#supervisorVacationList .request-item strong {
+    color: #2d3748 !important;
+}
+
+/* Vacation Response Modal */
+#vacationResponseModal .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#vacationResponseModal h3,
+#vacationResponseModal label {
+    color: #2d3748 !important;
+}
+
+/* Vacation Request Modal */
+#vacationRequestModal .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#vacationRequestModal h3,
+#vacationRequestModal p,
+#vacationRequestModal label {
+    color: #2d3748 !important;
+}
+
+/* Vacation Calendar Styling */
+#vacationCalendar {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#vacationCalendar .fc {
+    background: white;
+}
+
+#vacationCalendar .fc-toolbar-title {
+    color: #2d3748 !important;
+}
+
+#vacationCalendar .fc-button {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+#vacationCalendar .fc-button:hover {
+    background: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+#vacationCalendar .fc-daygrid-day-number {
+    color: #2d3748 !important;
+}
+
+#vacationCalendar .fc-col-header-cell-cushion {
+    color: #2d3748 !important;
+}
+
+#vacationCalendar .fc-daygrid-day {
+    background: white;
+}
+
+#vacationCalendar .fc-daygrid-day:hover {
+    background: #f7fafc;
+}
+
+/* Supervisor Vacation Calendar Styling */
+#supervisorVacationCalendar {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#supervisorVacationCalendar .fc {
+    background: white;
+}
+
+#supervisorVacationCalendar .fc-toolbar-title {
+    color: #2d3748 !important;
+}
+
+#supervisorVacationCalendar .fc-button {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+#supervisorVacationCalendar .fc-button:hover {
+    background: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+#supervisorVacationCalendar .fc-daygrid-day-number {
+    color: #2d3748 !important;
+}
+
+#supervisorVacationCalendar .fc-col-header-cell-cushion {
+    color: #2d3748 !important;
+}
+
+#supervisorVacationCalendar .fc-daygrid-day {
+    background: white;
+}
+
+#supervisorVacationCalendar .fc-daygrid-day:hover {
+    background: #f7fafc;
+}

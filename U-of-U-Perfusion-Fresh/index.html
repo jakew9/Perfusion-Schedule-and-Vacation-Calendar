@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U of U Perfusion Schedule Manager</title>
+    <meta name="description" content="Schedule and vacation management for University of Utah Perfusion team">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Perfusion Schedule">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#8B0000">
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="floating-u">U</div>
+    <div class="floating-u" style="animation-delay: 2s; left: 70%; top: 60%;"></div>
+    <div class="floating-u" style="animation-delay: 4s; left: 20%; top: 80%;"></div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="card login-card">
+                <h1>University of Utah</h1>
+                <h2>Perfusion Schedule Manager</h2>
+
+                <!-- Google Sign-In Button -->
+                <div id="googleSignInButton" style="display: flex; justify-content: center; margin-bottom: 20px;"></div>
+
+                <div style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+                    <span>or</span>
+                </div>
+
+                <div class="login-buttons">
+                    <button onclick="showLoginModal()" class="btn btn-secondary">Login with Password</button>
+                    <button onclick="showRegistrationModal()" class="btn btn-secondary">Request Access</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Published Schedule Page -->
+    <div id="publishedSchedulePage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Published Schedule</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="showPage('yourAccountPage')" class="btn btn-primary btn-sm">Your Account</button>
+                        <button onclick="logout()" class="btn btn-secondary btn-sm">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Month Selector for Published Schedule -->
+                <div style="margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <button onclick="changePublishedMonth(-1)" class="btn btn-secondary btn-sm">← Previous Month</button>
+                    <select id="publishedMonthSelector" onchange="loadPublishedMonth()" class="btn btn-secondary btn-sm" style="padding: 8px 15px; min-width: 200px;">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                    <button onclick="changePublishedMonth(1)" class="btn btn-secondary btn-sm">Next Month →</button>
+                </div>
+
+                <!-- Version Display -->
+                <div id="publishedVersionDisplay" style="text-align: center; margin: 10px 0; color: white; font-size: 1.1em; font-weight: 500;">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div id="calendar"></div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn active">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Schedule History Page -->
+    <div id="scheduleHistoryPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Schedule History</h2>
+                    <button onclick="showPage('publishedSchedulePage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+
+                <!-- Month Selector -->
+                <div style="margin: 20px 0;">
+                    <label style="color: white; margin-right: 10px;">Select Month:</label>
+                    <select id="historyMonthFilter" onchange="loadHistoryForMonth()" class="btn btn-secondary btn-sm" style="padding: 8px 15px; min-width: 200px;">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- Versions List -->
+                <div id="historyVersionsList" style="margin: 20px 0;">
+                    <!-- Populated by JavaScript with version buttons -->
+                </div>
+
+                <!-- Calendar View (shown when version is selected) -->
+                <div id="historyCalendarContainer" style="display: none; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 id="historyVersionTitle" style="color: white; margin: 0;"></h3>
+                        <button onclick="closeHistoryCalendar()" class="btn btn-secondary btn-sm">Close View</button>
+                    </div>
+                    <div id="historyCalendar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn active">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Supervisor Page -->
+    <div id="supervisorPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Supervisor Access</h2>
+                    <button onclick="showPage('publishedSchedulePage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+                <div class="supervisor-menu">
+                    <button onclick="accessSupervisorView()" class="btn btn-primary btn-large">View Schedule</button>
+                    <button onclick="accessSupervisorEdit()" class="btn btn-primary btn-large">Edit Schedule</button>
+                    <button onclick="accessManageVersions()" class="btn btn-primary btn-large">Manage Published Versions</button>
+                    <button onclick="showShiftRequestsModal()" class="btn btn-primary btn-large">
+                        Manage Shift Requests <span id="pendingRequestsBadge" class="unread-badge" style="display: none;"></span>
+                    </button>
+                    <button onclick="showVacationRequestsModal()" class="btn btn-primary btn-large">
+                        Manage Vacation Requests <span id="pendingVacationBadge" class="unread-badge" style="display: none;"></span>
+                    </button>
+                    <button onclick="showSupervisorMessagingModal()" class="btn btn-primary btn-large">Send Messages</button>
+                    <button onclick="showUserManagementModal()" class="btn btn-primary btn-large">User Management</button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn active">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Supervisor View Page -->
+    <div id="supervisorViewPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Supervisor View (Read-Only)</h2>
+                    <button onclick="showPage('supervisorPage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+                <div id="supervisorViewCalendar"></div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn active">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Supervisor Edit Page -->
+    <div id="supervisorEditPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Edit Schedule</h2>
+                    <div>
+                        <button onclick="showMonthSelectionModal()" class="btn btn-warning btn-sm">Load from Google Sheets</button>
+                        <a href="https://docs.google.com/spreadsheets/d/1pKNJK3nvpcwQor1obQm1V6qiWfwOPmImV361Qfqul8E/edit" target="_blank" class="btn btn-primary btn-sm" style="text-decoration: none;">Open Google Sheets</a>
+                        <button onclick="publishSchedule()" class="btn btn-success btn-sm">Publish</button>
+                        <button onclick="showPage('supervisorPage')" class="btn btn-secondary btn-sm">Back</button>
+                    </div>
+                </div>
+
+                <!-- Month Selector for Edit -->
+                <div style="margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <button onclick="changeEditMonth(-1)" class="btn btn-secondary btn-sm">← Previous Month</button>
+                    <select id="editMonthSelector" onchange="loadEditMonth()" class="btn btn-secondary btn-sm" style="padding: 8px 15px; min-width: 200px;">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                    <button onclick="changeEditMonth(1)" class="btn btn-secondary btn-sm">Next Month →</button>
+                </div>
+                <div id="supervisorEditCalendar"></div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn active">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Manage Published Page -->
+    <div id="managePublishedPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Manage Published Versions</h2>
+                    <button onclick="showPage('supervisorPage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+                <div id="versionTabs" class="version-tabs"></div>
+                <div id="versionCalendar"></div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn active">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Preferences Page -->
+    <div id="preferencesPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Preferences</h2>
+                    <button onclick="showPage('publishedSchedulePage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+                <div class="placeholder-content">
+                    <p>Preferences settings coming soon...</p>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn active">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Important Dates Page -->
+    <div id="importantDatesPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Important Dates</h2>
+                    <button onclick="showPage('publishedSchedulePage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+                <div class="placeholder-content">
+                    <p>Important dates coming soon...</p>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Your Account Page -->
+    <div id="yourAccountPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="page-header">
+                    <h2>Your Account</h2>
+                    <button onclick="showPage('publishedSchedulePage')" class="btn btn-secondary btn-sm">Back</button>
+                </div>
+
+                <!-- Account Tabs -->
+                <div class="account-tabs" style="display: flex; gap: 10px; margin: 20px 0; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px;">
+                    <button onclick="showAccountTab('messages')" id="accountTabMessages" class="account-tab-btn active">
+                        💬 Messages <span id="unreadMessageBadge" class="unread-badge" style="display: none;"></span>
+                    </button>
+                    <button onclick="showAccountTab('requests')" id="accountTabRequests" class="account-tab-btn">
+                        📝 Requests
+                    </button>
+                    <button onclick="showAccountTab('vacation')" id="accountTabVacation" class="account-tab-btn">
+                        🏖️ Vacation Calendar
+                    </button>
+                </div>
+
+                <!-- Tab Content: Messages -->
+                <div id="accountTabMessagesContent" class="account-tab-content active">
+                    <h3 style="color: white; margin-bottom: 15px;">Messages from Supervisor</h3>
+                    <div id="messagesList" style="max-height: 500px; overflow-y: auto;">
+                        <p style="color: rgba(255,255,255,0.7); text-align: center; padding: 40px 20px;">
+                            No messages yet.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Requests -->
+                <div id="accountTabRequestsContent" class="account-tab-content" style="display: none;">
+                    <h3 style="color: white; margin-bottom: 15px;">Request Shift Changes</h3>
+
+                    <!-- Request Form -->
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <form id="shiftRequestForm" onsubmit="submitShiftRequest(event)">
+                            <div class="form-group">
+                                <label for="requestDate" style="color: white;">Date:</label>
+                                <input type="date" id="requestDate" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9); color: #2d3748;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="requestType" style="color: white;">Request Type:</label>
+                                <select id="requestType" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9); color: #2d3748;">
+                                    <option value="">Select type...</option>
+                                    <option value="shiftChange">Shift Change</option>
+                                    <option value="shiftSwap">Shift Swap</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="requestReason" style="color: white;">Reason/Details:</label>
+                                <textarea id="requestReason" rows="4" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9); color: #2d3748;" placeholder="Explain your request..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Submit Request</button>
+                        </form>
+                    </div>
+
+                    <!-- Pending Requests -->
+                    <h4 style="color: white; margin-top: 30px; margin-bottom: 15px;">Your Requests</h4>
+                    <div id="userRequestsList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Tab Content: Vacation Calendar -->
+                <div id="accountTabVacationContent" class="account-tab-content" style="display: none;">
+                    <h3 style="color: white; margin-bottom: 15px;">Vacation Calendar</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px; font-size: 0.9em;">
+                        Click on dates to request time off. View all vacation requests below.
+                    </p>
+
+                    <!-- Vacation Calendar -->
+                    <div id="vacationCalendar"></div>
+
+                    <!-- All Vacation Requests List -->
+                    <h4 style="color: white; margin-top: 30px; margin-bottom: 15px;">All Vacation Requests</h4>
+                    <div id="vacationRequestsList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <button onclick="showPage('publishedSchedulePage')" class="nav-btn">
+                <span>📅</span>
+                <span>Schedule</span>
+            </button>
+            <button onclick="showPage('scheduleHistoryPage')" class="nav-btn">
+                <span>📜</span>
+                <span>History</span>
+            </button>
+            <button onclick="showPage('preferencesPage')" class="nav-btn">
+                <span>⚙️</span>
+                <span>Preferences</span>
+            </button>
+            <button onclick="showPage('supervisorPage')" class="nav-btn">
+                <span>👤</span>
+                <span>Supervisor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h3>Login</h3>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registrationModal')">&times;</span>
+            <h3>Request Access</h3>
+            <form id="registrationForm" onsubmit="handleRegistration(event)">
+                <div class="form-group">
+                    <label for="regName">Full Name:</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="regPasswordConfirm">Confirm Password:</label>
+                    <input type="password" id="regPasswordConfirm" required minlength="6">
+                </div>
+                <div id="registrationError" class="error-message"></div>
+                <div id="registrationSuccess" class="success-message"></div>
+                <button type="submit" class="btn btn-primary">Request Access</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supervisor Password Modal -->
+    <div id="supervisorPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('supervisorPasswordModal')">&times;</span>
+            <h3>Enter Supervisor Password</h3>
+            <form id="supervisorPasswordForm" onsubmit="handleSupervisorPassword(event)">
+                <div class="form-group">
+                    <label for="supervisorPassword">Password:</label>
+                    <input type="password" id="supervisorPassword" required>
+                </div>
+                <div id="supervisorPasswordError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content modal-wide">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h3>Edit Schedule for <span id="editDate"></span></h3>
+            <form id="editForm" onsubmit="saveEdit(event)">
+                <div class="form-group">
+                    <label for="editExtraShift">Extra Shift (+1):</label>
+                    <input type="text" id="editExtraShift" placeholder="e.g., JM/KL">
+                </div>
+                <div class="form-group">
+                    <label for="editDayShift">Day Shift:</label>
+                    <input type="text" id="editDayShift" placeholder="e.g., RT/SM">
+                </div>
+                <div class="form-group">
+                    <label for="editNightShift">Night Shift:</label>
+                    <input type="text" id="editNightShift" placeholder="e.g., BD">
+                </div>
+                <div class="form-group">
+                    <label for="editSchool">School:</label>
+                    <input type="text" id="editSchool" placeholder="e.g., AL/KP">
+                </div>
+                <div class="form-group">
+                    <label for="editOff">Off:</label>
+                    <input type="text" id="editOff" placeholder="e.g., JW">
+                </div>
+                <div class="form-group">
+                    <label for="editColor">Background Color:</label>
+                    <select id="editColor">
+                        <option value="auto">Auto (based on staffing)</option>
+                        <option value="#ff6b6b">Red (Understaffed)</option>
+                        <option value="#51cf66">Green (Properly Staffed)</option>
+                        <option value="#adb5bd">Gray (No Data)</option>
+                        <option value="#ffd43b">Yellow (Custom)</option>
+                        <option value="#74c0fc">Blue (Custom)</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div id="userManagementModal" class="modal">
+        <div class="modal-content modal-wide">
+            <span class="close" onclick="closeModal('userManagementModal')">&times;</span>
+            <h3>User Management</h3>
+            <div id="userManagementContent">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('eventDetailsModal')">&times;</span>
+            <h3>Schedule Details for <span id="eventDetailsDate"></span></h3>
+            <div id="eventDetailsContent"></div>
+        </div>
+    </div>
+
+    <!-- Month Selection Modal for Google Sheets Import -->
+    <div id="monthSelectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('monthSelectionModal')">&times;</span>
+            <h3>Load Schedule from Google Sheets</h3>
+            <form id="monthSelectionForm" onsubmit="handleMonthImport(event)">
+                <div class="form-group">
+                    <label for="importMonth">Select Month to Import:</label>
+                    <select id="importMonth" onchange="updateImportPreview()" required>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                    <strong>⚠️ Important:</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em;">Only dates within the selected month will be imported from Google Sheets. All other months will remain unchanged.</p>
+                </div>
+                <div id="importPreview" style="margin: 15px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                    <!-- Preview populated by JavaScript -->
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Import Selected Month</button>
+                    <button type="button" onclick="closeModal('monthSelectionModal')" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Publish Month Selection Modal -->
+    <div id="publishMonthModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('publishMonthModal')">&times;</span>
+            <h3>Select Month to Publish</h3>
+            <form id="publishMonthForm" onsubmit="confirmMonthPublish(event)">
+                <div class="form-group">
+                    <label for="publishMonth">Which month do you want to publish?</label>
+                    <select id="publishMonth" required>
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                <div style="background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                    <strong>ℹ️ Info:</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em;">This will publish only the selected month. The version will be automatically numbered (e.g., "January 1", "January 2", etc.).</p>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Publish Selected Month</button>
+                    <button type="button" onclick="closeModal('publishMonthModal')" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supervisor Messaging Modal -->
+    <div id="supervisorMessagingModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeModal('supervisorMessagingModal')">&times;</span>
+            <h3>Send Message to Users</h3>
+            <form id="supervisorMessagingForm" onsubmit="sendSupervisorMessage(event)">
+                <div class="form-group">
+                    <label for="messageRecipient">Send To:</label>
+                    <select id="messageRecipient" required>
+                        <option value="">Select recipient...</option>
+                        <option value="all">All Users</option>
+                        <option value="select">Select Specific User</option>
+                    </select>
+                </div>
+                <div class="form-group" id="specificUserGroup" style="display: none;">
+                    <label for="specificUser">User:</label>
+                    <select id="specificUser">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="messageSubject">Subject:</label>
+                    <input type="text" id="messageSubject" required placeholder="Message subject">
+                </div>
+                <div class="form-group">
+                    <label for="messageBody">Message:</label>
+                    <textarea id="messageBody" rows="6" required placeholder="Type your message here..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Send Message</button>
+                    <button type="button" onclick="closeModal('supervisorMessagingModal')" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shift Requests Management Modal -->
+    <div id="shiftRequestsModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <span class="close" onclick="closeModal('shiftRequestsModal')">&times;</span>
+            <h3>Manage Shift Requests</h3>
+
+            <!-- Filter Tabs -->
+            <div style="display: flex; gap: 10px; margin: 20px 0; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px;">
+                <button onclick="filterShiftRequests('pending')" id="filterPending" class="account-tab-btn active">
+                    Pending
+                </button>
+                <button onclick="filterShiftRequests('approved')" id="filterApproved" class="account-tab-btn">
+                    Approved
+                </button>
+                <button onclick="filterShiftRequests('denied')" id="filterDenied" class="account-tab-btn">
+                    Denied
+                </button>
+                <button onclick="filterShiftRequests('all')" id="filterAll" class="account-tab-btn">
+                    All
+                </button>
+            </div>
+
+            <div id="supervisorRequestsList" style="max-height: 500px; overflow-y: auto;">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Response Modal -->
+    <div id="requestResponseModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close" onclick="closeModal('requestResponseModal')">&times;</span>
+            <h3 id="responseModalTitle">Respond to Request</h3>
+            <form id="requestResponseForm" onsubmit="submitRequestResponse(event)">
+                <input type="hidden" id="responseRequestId">
+                <input type="hidden" id="responseStatus">
+
+                <div class="form-group">
+                    <label for="responseMessage">Response (optional):</label>
+                    <textarea id="responseMessage" rows="4" placeholder="Add a message to the user..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Confirm</button>
+                    <button type="button" onclick="closeModal('requestResponseModal')" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vacation Requests Management Modal -->
+    <div id="vacationRequestsModal" class="modal">
+        <div class="modal-content" style="max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+            <span class="close" onclick="closeModal('vacationRequestsModal')">&times;</span>
+            <h3>Manage Vacation Requests</h3>
+            <p style="color: #666; margin-bottom: 20px;">Click on any event to approve or deny vacation requests. Days with multiple requests will show all employees.</p>
+
+            <div id="supervisorVacationCalendar"></div>
+        </div>
+    </div>
+
+    <!-- Vacation Response Modal -->
+    <div id="vacationResponseModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeModal('vacationResponseModal')">&times;</span>
+            <h3 id="vacationResponseModalTitle">Vacation Requests</h3>
+            <p id="vacationResponseDate" style="color: #666; margin-bottom: 20px;"></p>
+
+            <div id="vacationRequestsForDay" style="max-height: 400px; overflow-y: auto;">
+                <!-- Populated by JavaScript with individual requests -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vacation Request Modal -->
+    <div id="vacationRequestModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close" onclick="closeModal('vacationRequestModal')">&times;</span>
+            <h3 id="vacationRequestModalTitle">Request Vacation</h3>
+            <p id="vacationRequestDate" style="color: #666; margin-bottom: 20px;"></p>
+            <form id="vacationRequestForm" onsubmit="submitVacationRequest(event)">
+                <input type="hidden" id="vacationRequestDateValue">
+
+                <div class="form-group">
+                    <label for="vacationRequestReason">Reason (Optional):</label>
+                    <textarea id="vacationRequestReason" rows="4" placeholder="Enter reason for time off..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <button type="button" onclick="closeModal('vacationRequestModal')" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <!-- Google API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+
+    <!-- Main Application Script (ES6 Module) -->
+    <script type="module" src="script.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
